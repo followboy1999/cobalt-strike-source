@@ -8,17 +8,17 @@ import sleep.runtime.SleepUtils;
 import java.util.*;
 
 public class EventManager {
-    protected Map listeners = new HashMap();
+    protected Map<String, LinkedList<Listener>> listeners = new HashMap<>();
     protected EventQueue queue = new EventQueue(this);
     protected boolean wildcards;
 
-    protected List getListener(String name) {
+    protected List<Listener> getListener(String name) {
         synchronized (this) {
             if (this.listeners.containsKey(name)) {
-                return (List) this.listeners.get(name);
+                return this.listeners.get(name);
             }
-            this.listeners.put(name, new LinkedList());
-            return (List) this.listeners.get(name);
+            this.listeners.put(name, new LinkedList<>());
+            return this.listeners.get(name);
         }
     }
 
@@ -48,7 +48,7 @@ public class EventManager {
     }
 
     public static Stack shallowCopy(Stack args) {
-        Stack copy2 = new Stack();
+        Stack<Object> copy2 = new Stack<>();
         for (Object arg : args) {
             copy2.push(arg);
         }
@@ -68,16 +68,16 @@ public class EventManager {
         return true;
     }
 
-    protected List getListeners(String eventName, ScriptInstance local) {
+    protected List<SleepClosure> getListeners(String eventName, ScriptInstance local) {
         Object lid = null;
         if (local != null) {
             lid = local.getMetadata().get("%scriptid%");
         }
         synchronized (this) {
             LinkedList<SleepClosure> callme = new LinkedList<>();
-            Iterator i = this.getListener(eventName).iterator();
+            Iterator<Listener> i = this.getListener(eventName).iterator();
             while (i.hasNext()) {
-                Listener l = (Listener) i.next();
+                Listener l = i.next();
                 if (!l.getClosure().getOwner().isLoaded()) {
                     i.remove();
                     continue;
@@ -93,9 +93,8 @@ public class EventManager {
 
     public void fireEventNoQueue(String eventName, Stack args, ScriptInstance local) {
         if (this.hasListener(eventName)) {
-            for (Object o : this.getListeners(eventName, local)) {
-                SleepClosure c = (SleepClosure) o;
-                SleepUtils.runCode(c, eventName, null, EventManager.shallowCopy(args));
+            for (SleepClosure o : this.getListeners(eventName, local)) {
+                SleepUtils.runCode(o, eventName, null, EventManager.shallowCopy(args));
             }
         }
     }

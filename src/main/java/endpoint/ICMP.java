@@ -6,12 +6,11 @@ import tap.TapProtocol;
 import java.io.*;
 import java.util.LinkedList;
 
-public class ICMP
-        extends Base implements Server.IcmpListener {
+public class ICMP extends Base implements Server.IcmpListener {
     public static final short COMMAND_READ = 204;
     public static final short COMMAND_WRITE = 221;
     protected byte[] buffer = new byte[1048576];
-    protected LinkedList outframes = new LinkedList();
+    protected LinkedList<Snapshot> outframes = new LinkedList<>();
     protected int outsize = 0;
 
     public ICMP(TapProtocol tapProtocol) {
@@ -25,7 +24,7 @@ public class ICMP
             this.outframes.add(new Snapshot(arrby));
             this.outsize += arrby.length + 2;
             while (this.outsize > 8192) {
-                Snapshot snapshot = (Snapshot) this.outframes.removeFirst();
+                Snapshot snapshot = this.outframes.removeFirst();
                 this.outsize -= snapshot.data.length + 2;
             }
         }
@@ -52,7 +51,7 @@ public class ICMP
             DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
             dataOutputStream.writeInt(0);
             while (this.outframes.size() > 0) {
-                Snapshot snapshot = (Snapshot) this.outframes.removeFirst();
+                Snapshot snapshot = this.outframes.removeFirst();
                 dataOutputStream.writeShort(snapshot.data.length);
                 dataOutputStream.write(snapshot.data, 0, snapshot.data.length);
                 n2 += snapshot.data.length + 2;
@@ -73,11 +72,11 @@ public class ICMP
         try {
             short s = dataInputStream.readShort();
             n += 2;
-            if (s == 221) {
+            if (s == COMMAND_WRITE) {
                 this.processWrite(arrby, n, dataInputStream);
                 return this.processRead(arrby, n, dataInputStream);
             }
-            if (s == 204) {
+            if (s == COMMAND_READ) {
                 return this.processRead(arrby, n, dataInputStream);
             }
             System.err.println("INVALID ICMP COMMAND: " + s + " len: " + arrby.length);

@@ -16,20 +16,18 @@ import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.Properties;
 
-public class Display
-        extends JPanel {
+public class Display extends JPanel {
     protected JTextPane console;
     protected Properties display;
     protected Font consoleFont;
     protected Colors colors;
-    protected LinkedList components = new LinkedList();
+    protected LinkedList<JComponent> components = new LinkedList<>();
 
     private void updateComponentLooks() {
         this.colors = new Colors(this.display);
         Color foreground = Prefs.getPreferences().getColor("console.foreground.color", "#ffffff");
         Color background = Prefs.getPreferences().getColor("console.background.color", "#000000");
-        for (Object component1 : this.components) {
-            JComponent component = (JComponent) component1;
+        for (JComponent component : this.components) {
             if (component == this.console) {
                 component.setOpaque(false);
             } else {

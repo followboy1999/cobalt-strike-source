@@ -27,8 +27,7 @@ import sleep.runtime.SleepUtils;
 import javax.swing.*;
 import java.util.Stack;
 
-public class AggressorBridge implements Function,
-        Loadable {
+public class AggressorBridge implements Function, Loadable {
     protected TabManager manager;
     protected Cortana engine;
     protected MultiFrame window;
@@ -109,70 +108,70 @@ public class AggressorBridge implements Function,
 
     @Override
     public Scalar evaluate(String name, ScriptInstance script, Stack args) {
-        if (name.equals("&openScriptConsole")) {
-            Console c = new CortanaConsole(this.engine).getConsole();
-            this.manager.addTab("Script Console", c, null, "Cortana script console");
-            return SleepUtils.getScalar(c);
-        }
-        if (name.equals("&openEventLog")) {
-            EventLog ev = new EventLog(this.client.getData(), this.engine, this.client.getConnection());
-            Console c = ev.getConsole();
-            this.manager.addTab("Event Log", c, ev.cleanup(), "Log of events/chat messages");
-            return SleepUtils.getScalar(c);
-        }
-        if (name.equals("&openWebLog")) {
-            WebLog ev = new WebLog(this.client.getData(), this.engine, this.client.getConnection());
-            Console c = ev.getConsole();
-            this.manager.addTab("Web Log", c, ev.cleanup(), "Log of web server activity");
-            return SleepUtils.getScalar(c);
-        }
-        if (name.equals("&openSiteManager")) {
-            SiteManager ev = new SiteManager(this.client.getData(), this.engine, this.client.getConnection());
-            this.manager.addTab("Sites", ev.getContent(), ev.cleanup(), "Manage Cobalt Strike's web server");
-            return SleepUtils.getEmptyScalar();
-        }
-        if (name.equals("&openListenerManager")) {
-            ListenerManager ev = new ListenerManager(this.client.getData(), this.engine, this.client.getConnection());
-            this.manager.addTab("Listeners", ev.getContent(), ev.cleanup(), "Manage Cobalt Strike's listeners");
-            return SleepUtils.getEmptyScalar();
-        }
-        if (name.equals("&openCredentialManager")) {
-            CredentialManager ev = new CredentialManager(this.client);
-            this.manager.addTab("Credentials", ev.getContent(), ev.cleanup(), "Manage credentials");
-            return SleepUtils.getEmptyScalar();
-        }
-        if (name.equals("&openApplicationManager")) {
-            ApplicationManager ev = new ApplicationManager(this.client);
-            this.manager.addTab("Applications", ev.getContent(), ev.cleanup(), "View system profiler results");
-            return SleepUtils.getEmptyScalar();
-        }
-        if (name.equals("&openBeaconBrowser")) {
-            BeaconBrowser ev = new BeaconBrowser(this.client);
-            this.manager.addTab("Beacons", ev.getContent(), ev.cleanup(), "Haters gonna hate, beacons gonna beacon");
-            return SleepUtils.getEmptyScalar();
-        }
-        if (name.equals("&openTargetBrowser")) {
-            TargetBrowser ev = new TargetBrowser(this.client);
-            this.manager.addTab("Targets", ev.getContent(), ev.cleanup(), "Hosts that Cobalt Strike knows about");
-            return SleepUtils.getEmptyScalar();
-        }
-        if (name.equals("&openServiceBrowser")) {
-            String[] targets = CommonUtils.toStringArray(BridgeUtilities.getArray(args));
-            ServiceBrowser ev = new ServiceBrowser(this.client, targets);
-            this.manager.addTab("Services", ev.getContent(), ev.cleanup(), "Services known by Cobalt Strike");
-            return SleepUtils.getEmptyScalar();
-        }
-        if (name.equals("&openPortScanner")) {
-            String[] targets = CommonUtils.toStringArray(BridgeUtilities.getArray(args));
-            new PortScanDialog(this.client, targets).show();
-            return SleepUtils.getEmptyScalar();
-        }
-        if (name.equals("&openPortScannerLocal")) {
-            String bid = BridgeUtilities.getString(args, "");
-            new PortScanLocalDialog(this.client, bid).show();
-            return SleepUtils.getEmptyScalar();
-        }
         switch (name) {
+            case "&openScriptConsole": {
+                Console c = new CortanaConsole(this.engine).getConsole();
+                this.manager.addTab("Script Console", c, null, "Cortana script console");
+                return SleepUtils.getScalar(c);
+            }
+            case "&openEventLog": {
+                EventLog ev = new EventLog(this.client.getData(), this.engine, this.client.getConnection());
+                Console c = ev.getConsole();
+                this.manager.addTab("Event Log", c, ev.cleanup(), "Log of events/chat messages");
+                return SleepUtils.getScalar(c);
+            }
+            case "&openWebLog": {
+                WebLog ev = new WebLog(this.client.getData(), this.engine, this.client.getConnection());
+                Console c = ev.getConsole();
+                this.manager.addTab("Web Log", c, ev.cleanup(), "Log of web server activity");
+                return SleepUtils.getScalar(c);
+            }
+            case "&openSiteManager": {
+                SiteManager ev = new SiteManager(this.client.getData(), this.engine, this.client.getConnection());
+                this.manager.addTab("Sites", ev.getContent(), ev.cleanup(), "Manage Cobalt Strike's web server");
+                return SleepUtils.getEmptyScalar();
+            }
+            case "&openListenerManager": {
+                ListenerManager ev = new ListenerManager(this.client.getData(), this.engine, this.client.getConnection());
+                this.manager.addTab("Listeners", ev.getContent(), ev.cleanup(), "Manage Cobalt Strike's listeners");
+                return SleepUtils.getEmptyScalar();
+            }
+            case "&openCredentialManager": {
+                CredentialManager ev = new CredentialManager(this.client);
+                this.manager.addTab("Credentials", ev.getContent(), ev.cleanup(), "Manage credentials");
+                return SleepUtils.getEmptyScalar();
+            }
+            case "&openApplicationManager": {
+                ApplicationManager ev = new ApplicationManager(this.client);
+                this.manager.addTab("Applications", ev.getContent(), ev.cleanup(), "View system profiler results");
+                return SleepUtils.getEmptyScalar();
+            }
+            case "&openBeaconBrowser": {
+                BeaconBrowser ev = new BeaconBrowser(this.client);
+                this.manager.addTab("Beacons", ev.getContent(), ev.cleanup(), "Haters gonna hate, beacons gonna beacon");
+                return SleepUtils.getEmptyScalar();
+            }
+            case "&openTargetBrowser": {
+                TargetBrowser ev = new TargetBrowser(this.client);
+                this.manager.addTab("Targets", ev.getContent(), ev.cleanup(), "Hosts that Cobalt Strike knows about");
+                return SleepUtils.getEmptyScalar();
+            }
+            case "&openServiceBrowser": {
+                String[] targets = CommonUtils.toStringArray(BridgeUtilities.getArray(args));
+                ServiceBrowser ev = new ServiceBrowser(this.client, targets);
+                this.manager.addTab("Services", ev.getContent(), ev.cleanup(), "Services known by Cobalt Strike");
+                return SleepUtils.getEmptyScalar();
+            }
+            case "&openPortScanner": {
+                String[] targets = CommonUtils.toStringArray(BridgeUtilities.getArray(args));
+                new PortScanDialog(this.client, targets).show();
+                return SleepUtils.getEmptyScalar();
+            }
+            case "&openPortScannerLocal": {
+                String bid = BridgeUtilities.getString(args, "");
+                new PortScanLocalDialog(this.client, bid).show();
+                return SleepUtils.getEmptyScalar();
+            }
             case "&openBeaconConsole": {
                 String bid = BridgeUtilities.getString(args, "");
                 BeaconEntry entry = DataUtils.getBeacon(this.client.getData(), bid);
@@ -204,8 +203,8 @@ public class AggressorBridge implements Function,
                 String[] bids = BeaconBridge.bids(args);
                 if (bids.length == 1) {
                     BeaconEntry entry = DataUtils.getBeacon(this.client.getData(), bids[0]);
-                    FileBrowser c = new FileBrowser(this.client, bids[0]);
-                    this.manager.addTab(entry.title("Files"), c.getContent(), null, "File Browser");
+                    FileBrowser fileBrowser = new FileBrowser(this.client, bids[0]);
+                    this.manager.addTab(entry.title("Files"), fileBrowser.getContent(), null, "File Browser");
                 }
                 break;
             }

@@ -18,11 +18,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Stack;
 
-public class EventLog
-        extends AObject implements ActionListener,
-        ConsolePopup,
-        Callback,
-        Do {
+public class EventLog extends AObject implements ActionListener, ConsolePopup, Callback, Do {
     protected Console console;
     protected TeamQueue conn;
     protected Cortana engine;
@@ -31,7 +27,7 @@ public class EventLog
     protected WindowCleanup state;
     protected String lag = "??";
 
-    protected Stack sbarArgs(String lag) {
+    protected Stack<Scalar> sbarArgs(String lag) {
         Stack<Scalar> temp = new Stack<>();
         temp.push(SleepUtils.getScalar(lag));
         return temp;

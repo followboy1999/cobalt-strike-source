@@ -9,8 +9,7 @@ import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 
-public class AboutDialog
-        extends AObject {
+public class AboutDialog extends AObject {
     public void show() {
         JFrame dialog = DialogUtils.dialog("About", 320, 200);
         dialog.setLayout(new BorderLayout());

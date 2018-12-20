@@ -70,7 +70,7 @@ public class BeaconTabCompletion extends GenericTabCompletion {
         int thefirst;
         int thesecond;
         Iterator x;
-        if (options != null && options.size() == 0 && text.matches("inject \\d+ x.. .*")) {
+        if (options.size() == 0 && text.matches("inject \\d+ x.. .*")) {
             targets = Listener.getListenerNamesWithSMB(this.client.getData());
             if (targets.size() == 0) {
                 options.add(text);
@@ -89,7 +89,7 @@ public class BeaconTabCompletion extends GenericTabCompletion {
             filterList(options, text);
         } else {
             Iterator i;
-            if (options != null && options.size() == 0 && this.isFoo(text)) {
+            if (options.size() == 0 && this.isFoo(text)) {
                 targets = Listener.getListenerNamesWithSMB(this.client.getData());
                 if (targets.size() == 0) {
                     options.add(text);
@@ -105,7 +105,7 @@ public class BeaconTabCompletion extends GenericTabCompletion {
 
                 Collections.sort(options);
                 filterList(options, text);
-            } else if (options != null && options.size() == 0 && this.isBar(text)) {
+            } else if (options.size() == 0 && this.isBar(text)) {
                 targets = Listener.getListenerNamesWithSMB(this.client.getData());
                 if (targets.size() == 0) {
                     options.add(text);
@@ -122,21 +122,21 @@ public class BeaconTabCompletion extends GenericTabCompletion {
 
                 Collections.sort(options);
                 filterList(options, text);
-            } else if (options == null || options.size() != 0 || !text.startsWith("spawn ") && !text.startsWith("bypassuac ")) {
-                if (options != null && options.size() == 0 && text.startsWith("elevate ")) {
+            } else if (options.size() != 0 || !text.startsWith("spawn ") && !text.startsWith("bypassuac ")) {
+                if (options.size() == 0 && text.startsWith("elevate ")) {
                     targets = DataUtils.getBeaconExploits(this.client.getData()).exploits();
                     return this.getOptionsFromList(text, targets);
                 }
 
-                if (options == null || options.size() != 0 || !text.startsWith("kerberos_ticket_use ") && !text.startsWith("kerberos_ccache_use ") && !text.startsWith("upload ") && !text.startsWith("powershell-import ")) {
-                    if (options == null || options.size() != 0 || !text.matches("execute-assembly .*") && !text.matches("shspawn x.. .*") && !text.matches("shinject \\d+ x.. .*") && !text.matches("dllinject \\d+ .*") && !text.matches("ssh-key .*? .*? .*")) {
-                        if (options != null && options.size() == 0 && (text.startsWith("help ") || text.startsWith("? "))) {
+                if (options.size() != 0 || !text.startsWith("kerberos_ticket_use ") && !text.startsWith("kerberos_ccache_use ") && !text.startsWith("upload ") && !text.startsWith("powershell-import ")) {
+                    if (options.size() != 0 || !text.matches("execute-assembly .*") && !text.matches("shspawn x.. .*") && !text.matches("shinject \\d+ x.. .*") && !text.matches("dllinject \\d+ .*") && !text.matches("ssh-key .*? .*? .*")) {
+                        if (options.size() == 0 && (text.startsWith("help ") || text.startsWith("? "))) {
                             targets = CommonUtils.toList("net computers, net dclist, net domain_trusts, net group, net localgroup, net logons, net sessions, net share, net user, net view");
                             List builtin = DataUtils.getBeaconCommands(this.client.getData()).commands();
                             return this.getOptionsFromList(text, CommonUtils.combine(targets, builtin));
                         }
 
-                        if (options != null && options.size() == 0 && (text.startsWith("psexec_psh ") || text.startsWith("psexec ") || text.startsWith("wmi ") || text.startsWith("winrm ") || text.startsWith("link ") || text.startsWith("ssh ") || text.startsWith("ssh-key "))) {
+                        if (options.size() == 0 && (text.startsWith("psexec_psh ") || text.startsWith("psexec ") || text.startsWith("wmi ") || text.startsWith("winrm ") || text.startsWith("link ") || text.startsWith("ssh ") || text.startsWith("ssh-key "))) {
                             targets = DataUtils.getTargetNames(this.client.getData());
                             return this.getOptionsFromList(text, targets);
                         }
@@ -144,7 +144,7 @@ public class BeaconTabCompletion extends GenericTabCompletion {
                         LinkedList results;
                         LinkedList res;
                         String cmd;
-                        if (options != null && options.size() == 0 && (text.startsWith("powershell ") || text.startsWith("powerpick ") || text.matches("psinject \\d+ x.. .*"))) {
+                        if (options.size() == 0 && (text.startsWith("powershell ") || text.startsWith("powerpick ") || text.matches("psinject \\d+ x.. .*"))) {
                             results = new LinkedList(DataUtils.getBeaconPowerShellCommands(this.client.getData(), this.bid));
                             res = new LinkedList();
                             i = results.iterator();
@@ -160,23 +160,23 @@ public class BeaconTabCompletion extends GenericTabCompletion {
                             return this.getOptionsFromList(text, res);
                         }
 
-                        if (options != null && options.size() == 0 && text.matches("reg query.*? x.. .*")) {
+                        if (options.size() == 0 && text.matches("reg query.*? x.. .*")) {
                             return this.getOptionsFromList(text, CommonUtils.toList("HKCC\\, HKCR\\, HKCU\\, HKLM\\, HKU\\"));
                         }
 
-                        if (options != null && options.size() == 0 && (text.startsWith("reg query ") || text.startsWith("reg queryv "))) {
+                        if (options.size() == 0 && (text.startsWith("reg query ") || text.startsWith("reg queryv "))) {
                             return this.getOptionsFromList(text, CommonUtils.toList("x64, x86"));
                         }
 
-                        if (options != null && options.size() == 0 && text.startsWith("reg ")) {
+                        if (options.size() == 0 && text.startsWith("reg ")) {
                             return this.getOptionsFromList(text, CommonUtils.toList("query, queryv"));
                         }
 
-                        if (options != null && options.size() == 0 && text.startsWith("net ")) {
+                        if (options.size() == 0 && text.startsWith("net ")) {
                             return this.getOptionsFromList(text, CommonUtils.toList("computers, dclist, domain_trusts, group, localgroup, logons, sessions, share, time, user, view"));
                         }
 
-                        if (options != null && options.size() == 0 && text.startsWith("note ")) {
+                        if (options.size() == 0 && text.startsWith("note ")) {
                             BeaconEntry me = DataUtils.getBeacon(this.client.getData(), this.bid);
                             if (me != null) {
                                 res = new LinkedList();
@@ -187,15 +187,15 @@ public class BeaconTabCompletion extends GenericTabCompletion {
                             return this.getOptionsFromList(text, new LinkedList());
                         }
 
-                        if (options != null && options.size() == 0 && text.startsWith("covertvpn ")) {
+                        if (options.size() == 0 && text.startsWith("covertvpn ")) {
                             return this.getOptionsFromList(text, DataUtils.getInterfaceList(this.client.getData()));
                         }
 
-                        if (options != null && options.size() == 0 && text.startsWith("desktop ")) {
+                        if (options.size() == 0 && text.startsWith("desktop ")) {
                             return this.getOptionsFromList(text, CommonUtils.toList("high, low"));
                         }
 
-                        if (options != null && options.size() == 0 && text.startsWith("unlink ")) {
+                        if (options.size() == 0 && text.startsWith("unlink ")) {
                             results = new LinkedList();
                             BeaconEntry me = DataUtils.getBeacon(this.client.getData(), this.bid);
                             if (me != null && me.getParentId() != null) {
@@ -215,7 +215,7 @@ public class BeaconTabCompletion extends GenericTabCompletion {
                             return this.getOptionsFromList(text, results);
                         }
 
-                        if (options != null && options.size() == 0 && text.startsWith("mimikatz ")) {
+                        if (options.size() == 0 && text.startsWith("mimikatz ")) {
                             results = new LinkedList(CommonUtils.toList(CommonUtils.readResourceAsString("resources/mimikatz.txt").trim().split("\n")));
                             res = new LinkedList();
                             i = results.iterator();

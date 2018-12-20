@@ -62,7 +62,7 @@ public final class DataUtils {
     }
 
     public static List<String> getBeaconChain(DataManager data, String bid) {
-        return DataUtils.getBeaconChain(data, bid, new LinkedList<String>());
+        return DataUtils.getBeaconChain(data, bid, new LinkedList<>());
     }
 
     private static List<String> getBeaconChain(DataManager data, String bid, List<String> results) {
@@ -133,9 +133,8 @@ public final class DataUtils {
 
     public static List<Map<String, Object>> getBeaconModelFromResult(Map<String,BeaconEntry> resultz) {
         LinkedList<Map<String,Object>> result = new LinkedList<>();
-        for (BeaconEntry o : resultz.values()) {
-            BeaconEntry entry = (BeaconEntry) o;
-            Map value = entry.toMap();
+        for (BeaconEntry entry : resultz.values()) {
+            Map<String, Object> value = entry.toMap();
             if (entry.isEmpty()) {
                 value.put("image", DialogUtils.TargetVisualizationSmall("unknown", 0.0, false, false));
             } else {
@@ -151,15 +150,14 @@ public final class DataUtils {
     }
 
     public static List<String> getTargetNames(DataManager data) {
-        LinkedList<String> results = ((LinkedList<Map>) data.getListSafe("targets")).stream().map(entry -> (String) entry.get("name")).filter(Objects::nonNull).collect(Collectors.toCollection(LinkedList::new));
-        return results;
+        return ((LinkedList<Map>) data.getListSafe("targets")).stream().map(entry -> (String) entry.get("name")).filter(Objects::nonNull).collect(Collectors.toCollection(LinkedList::new));
     }
 
-    public static List getListenerModel(GenericDataManager datag, DataManager datal) {
+    public static List<Object> getListenerModel(GenericDataManager datag, DataManager datal) {
         Map a = Listener.filterSMB(datag.getMapSafe("listeners"));
         Map<String, Object> b = datal.getMapSafe("listeners");
         a.putAll(b);
-        return new LinkedList(a.values());
+        return new LinkedList<Object>(a.values());
     }
 
     public static List getUsableListenerModel(GenericDataManager datag, DataManager datal) {

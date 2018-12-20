@@ -5,6 +5,7 @@ import aggressor.ui.UseSynthetica;
 import common.Authorization;
 import common.License;
 import common.Requirements;
+import de.javasoft.plaf.synthetica.painter.SyntheticaPainter;
 import sleep.parser.ParserConfig;
 
 public class Aggressor {

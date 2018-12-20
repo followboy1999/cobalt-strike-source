@@ -351,7 +351,7 @@ public class BeaconEntry implements Serializable, Loggable {
     }
 
     public String title(String verb) {
-        return verb + " " + this.intz + "@" + this.pid;
+        return verb + " " + this.intz + ":" + this.pid;
     }
 
     public String toString() {

@@ -1,5 +1,6 @@
 package common;
 
+import sleep.runtime.Scalar;
 import sleep.runtime.SleepUtils;
 
 import java.io.DataOutputStream;
@@ -27,41 +28,45 @@ public class LoggedEvent implements Serializable, Scriptable, Transcript, Loggab
     public short type;
 
     public static LoggedEvent NoUser(LoggedEvent original) {
-        LoggedEvent ev = new LoggedEvent(null, original.to, (short) 6, null);
+        LoggedEvent ev = new LoggedEvent(null, original.to, (short) NOUSER_ERROR, null);
         ev.when = original.when;
         return ev;
     }
 
     public static LoggedEvent Join(String nick) {
-        return new LoggedEvent(nick, null, (short) 2, null);
+        return new LoggedEvent(nick, null, (short) JOIN_EVENT, null);
     }
 
     public static LoggedEvent Quit(String nick) {
-        return new LoggedEvent(nick, null, (short) 3, null);
+        return new LoggedEvent(nick, null, (short) QUIT_EVENT, null);
     }
 
     public static LoggedEvent Public(String nick, String text) {
-        return new LoggedEvent(nick, null, (short) 0, text);
+        return new LoggedEvent(nick, null, (short) PUBLIC_CHAT_EVENT, text);
     }
 
     public static LoggedEvent Private(String from, String to, String text) {
-        return new LoggedEvent(from, to, (short) 1, text);
+        return new LoggedEvent(from, to, (short) PRIVATE_CHAT_EVENT, text);
     }
 
     public static LoggedEvent Action(String nick, String text) {
-        return new LoggedEvent(nick, null, (short) 4, text);
+        return new LoggedEvent(nick, null, (short) ACTION_EVENT, text);
     }
 
     public static LoggedEvent Notify(String text) {
-        return new LoggedEvent(null, null, (short) 5, text);
+        return new LoggedEvent(null, null, (short) NOTIFY_EVENT, text);
     }
 
     public static LoggedEvent NewSite(String nick, String url, String desc) {
-        return new LoggedEvent(nick, null, (short) 7, "hosted " + desc + " @ " + url);
+        return new LoggedEvent(nick, null, (short) NEW_SITE, "hosted " + desc + " @ " + url);
     }
 
     public static LoggedEvent BeaconInitial(BeaconEntry data) {
-        return data.isBeacon() ? new LoggedEvent(null, data.getId(), (short) 8, data.getUser() + "@" + data.getInternal() + " (" + data.getComputer() + ")") : new LoggedEvent(null, data.getId(), (short) 9, data.getUser() + "@" + data.getInternal() + " (" + data.getComputer() + ")");
+        if (data.isBeacon()) {
+            return new LoggedEvent(null, data.getId(), (short) BEACON_INITIAL_EVENT, data.getUser() + "@" + data.getInternal() + " (" + data.getComputer() + ")");
+        }
+
+        return new LoggedEvent(null, data.getId(), (short) SSH_INITIAL_EVENT, data.getUser() + "@" + data.getInternal() + " (" + data.getComputer() + ")");
     }
 
     public LoggedEvent(String from, String to, short type, String text) {
@@ -77,38 +82,38 @@ public class LoggedEvent implements Serializable, Scriptable, Transcript, Loggab
     }
 
     public Stack eventArguments() {
-        Stack temp = new Stack();
+        Stack<Scalar> temp = new Stack<>();
         switch (this.type) {
-            case 0:
-            case 4:
-            case 7:
+            case PUBLIC_CHAT_EVENT:
+            case ACTION_EVENT:
+            case NEW_SITE:
                 temp.push(SleepUtils.getScalar(this.when));
                 temp.push(SleepUtils.getScalar(this.text));
                 temp.push(SleepUtils.getScalar(this.from));
                 break;
-            case 1:
+            case PRIVATE_CHAT_EVENT:
                 temp.push(SleepUtils.getScalar(this.when));
                 temp.push(SleepUtils.getScalar(this.text));
                 temp.push(SleepUtils.getScalar(this.to));
                 temp.push(SleepUtils.getScalar(this.from));
                 break;
-            case 2:
-            case 3:
+            case JOIN_EVENT:
+            case QUIT_EVENT:
                 temp.push(SleepUtils.getScalar(this.when));
                 temp.push(SleepUtils.getScalar(this.from));
                 break;
-            case 5:
+            case NOTIFY_EVENT:
                 temp.push(SleepUtils.getScalar(this.when));
                 temp.push(SleepUtils.getScalar(this.text));
                 break;
-            case 6:
+            case NOUSER_ERROR:
                 temp.push(SleepUtils.getScalar(this.when));
                 temp.push(SleepUtils.getScalar(this.to));
                 break;
-            case 8:
+            case BEACON_INITIAL_EVENT:
                 temp.push(SleepUtils.getScalar(this.when));
                 temp.push(SleepUtils.getScalar(this.text));
-            case 9:
+            case SSH_INITIAL_EVENT:
                 temp.push(SleepUtils.getScalar(this.when));
                 temp.push(SleepUtils.getScalar(this.text));
         }
@@ -118,25 +123,25 @@ public class LoggedEvent implements Serializable, Scriptable, Transcript, Loggab
 
     public String eventName() {
         switch (this.type) {
-            case 0:
+            case PUBLIC_CHAT_EVENT:
                 return "event_public";
-            case 1:
+            case PRIVATE_CHAT_EVENT:
                 return "event_private";
-            case 2:
+            case JOIN_EVENT:
                 return "event_join";
-            case 3:
+            case QUIT_EVENT:
                 return "event_quit";
-            case 4:
+            case ACTION_EVENT:
                 return "event_action";
-            case 5:
+            case NOTIFY_EVENT:
                 return "event_notify";
-            case 6:
-                return "event_nouser";
-            case 7:
+            case NEW_SITE:
                 return "event_newsite";
-            case 8:
+            case NOUSER_ERROR:
+                return "event_nouser";
+            case BEACON_INITIAL_EVENT:
                 return "event_beacon_initial";
-            case 9:
+            case SSH_INITIAL_EVENT:
                 return "event_ssh_initial";
             default:
                 return "event_unknown";
@@ -149,37 +154,41 @@ public class LoggedEvent implements Serializable, Scriptable, Transcript, Loggab
 
     public void formatEvent(DataOutputStream out) throws IOException {
         StringBuilder results = new StringBuilder();
+
         results.append(CommonUtils.formatTime(this.when));
         results.append(" ");
+
         switch (this.type) {
-            case 0:
+            case PUBLIC_CHAT_EVENT:
                 results.append("<").append(this.from).append("> ").append(this.text).append("\n");
                 break;
-            case 1:
+
+            case PRIVATE_CHAT_EVENT:
                 return;
-            case 2:
+            case JOIN_EVENT:
                 results.append("*** ").append(this.from).append(" joined\n");
                 break;
-            case 3:
+            case QUIT_EVENT:
                 results.append("*** ").append(this.from).append(" quit\n");
                 break;
-            case 4:
+            case ACTION_EVENT:
                 results.append("* ").append(this.from).append(" ").append(this.text).append("\n");
                 break;
-            case 5:
-                results.append("*** ").append(this.text).append("\n");
-                break;
-            case 6:
-                return;
-            case 7:
+            case NEW_SITE:
                 results.append("*** ").append(this.from).append(" ").append(this.text).append("\n");
                 break;
-            case 8:
+            case NOTIFY_EVENT:
+                results.append("*** ").append(this.text).append("\n");
+                break;
+            case NOUSER_ERROR:
+                return;
+            case BEACON_INITIAL_EVENT:
                 results.append("*** initial beacon from ").append(this.text).append("\n");
                 break;
-            case 9:
+            case SSH_INITIAL_EVENT:
                 results.append("*** new ssh session ").append(this.text).append("\n");
         }
+
 
         CommonUtils.writeUTF8(out, results.toString());
     }
@@ -193,25 +202,25 @@ public class LoggedEvent implements Serializable, Scriptable, Transcript, Loggab
     }
 
     public boolean hasInformation() {
-        return this.type == 8 || this.type == 5 || this.type == 7 || this.type == 9;
+        return (this.type == BEACON_INITIAL_EVENT) || (this.type == NOTIFY_EVENT) || (this.type == NEW_SITE) || (this.type == SSH_INITIAL_EVENT);
     }
 
     public Map archive() {
-        Map temp = new HashMap();
+        Map<String, Object> temp = new HashMap<>();
         temp.put("when", this.when);
-        if (this.type == 8) {
+
+        if (this.type == BEACON_INITIAL_EVENT) {
             temp.put("type", "beacon_initial");
             temp.put("data", "initial beacon");
             temp.put("bid", this.to);
-        } else if (this.type == 9) {
+        } else if (this.type == SSH_INITIAL_EVENT) {
             temp.put("type", "ssh_initial");
             temp.put("data", "new ssh session");
             temp.put("bid", this.to);
-        } else if (this.type == 5 || this.type == 7) {
+        } else if ((this.type == NOTIFY_EVENT) || (this.type == NEW_SITE)) {
             temp.put("type", "notify");
             temp.put("data", this.text);
         }
-
         return temp;
     }
 }

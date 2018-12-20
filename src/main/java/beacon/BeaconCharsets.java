@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BeaconCharsets {
-    protected Map charsets_ansi = new HashMap();
-    protected Map charsets_oem = new HashMap();
+    protected Map<String, Charset> charsets_ansi = new HashMap<>();
+    protected Map<String, Charset> charsets_oem = new HashMap<>();
 
     protected BeaconCharsets() {
     }
@@ -23,7 +23,7 @@ public class BeaconCharsets {
         return this.process(this.charsets_oem, id, text);
     }
 
-    public String process(Map charsets, String id, byte[] text) {
+    public String process(Map<String, Charset> charsets, String id, byte[] text) {
         Charset foo = this.get(charsets, id);
         if (foo == null) {
             return CommonUtils.bString(text);
@@ -36,9 +36,9 @@ public class BeaconCharsets {
         }
     }
 
-    public Charset get(Map charsets, String id) {
+    public Charset get(Map<String, Charset> charsets, String id) {
         synchronized (this) {
-            return (Charset) charsets.get(id);
+            return charsets.get(id);
         }
     }
 
@@ -47,7 +47,7 @@ public class BeaconCharsets {
         this.register(this.charsets_oem, id, charset_o);
     }
 
-    public void register(Map charsets, String id, String charset) {
+    public void register(Map<String, Charset> charsets, String id, String charset) {
         if (charset == null) {
             return;
         }

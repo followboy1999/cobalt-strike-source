@@ -74,7 +74,6 @@ public class TeamServer {
             }
         } catch (Exception ex) {
             MudgeSanity.logException("team server startup", ex, false);
-            return;
         }
     }
 

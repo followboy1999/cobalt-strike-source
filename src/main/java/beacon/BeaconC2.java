@@ -33,7 +33,7 @@ public class BeaconC2 {
     protected BeaconParts parts = new BeaconParts();
     protected BeaconPipes pipes = new BeaconPipes();
     protected Resources resources;
-    protected Map pending = new HashMap();
+    protected Map<Integer, PendingRequest> pending = new HashMap<Integer, PendingRequest>();
     protected int reqno = 0;
     protected LinkedList<Parser> parsers = new LinkedList<>();
 
@@ -101,10 +101,10 @@ public class BeaconC2 {
     }
 
     public byte[] dump(String bid, int max, int hardmax) {
-        return this.dump(bid, max, hardmax, new LinkedHashSet());
+        return this.dump(bid, max, hardmax, new LinkedHashSet<>());
     }
 
-    public byte[] dump(String bid, int max, int hardmax, HashSet safety) {
+    public byte[] dump(String bid, int max, int hardmax, HashSet<String> safety) {
         if (!AssertUtils.TestUnique(bid, safety)) {
             return new byte[0];
         }
@@ -274,7 +274,7 @@ public class BeaconC2 {
             if (!target.equals(tentry.getInternal())) continue;
             candidates.add(tid);
         }
-        for (Object candidate : candidates) {
+        for (String candidate : candidates) {
             String chid = candidate + "";
             if (this.pipes.isChild(id, chid)) {
                 this.task_to_unlink(id, chid);
@@ -555,7 +555,7 @@ public class BeaconC2 {
                     PendingRequest preq;
                     Integer key = reqid;
                     synchronized (this) {
-                        preq = (PendingRequest) this.pending.remove(key);
+                        preq = this.pending.remove(key);
                     }
                     if (key < 0) {
                         this.process_beacon_callback_default(key, id, rest);

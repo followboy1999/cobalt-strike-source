@@ -82,9 +82,7 @@ public class SecureServerSocket {
                     MudgeSanity.logException("could not authenticate client from " + last1, ex, false);
                 }
                 try {
-                    if (client != null) {
-                        client.close();
-                    }
+                    client.close();
                 } catch (Exception ex) {
                     // empty catch block
                 }
@@ -126,7 +124,6 @@ public class SecureServerSocket {
                 return bi.toString(16);
             }
         } catch (Exception ex) {
-            System.err.println(ex);
             ex.printStackTrace();
         }
         return "unknown";

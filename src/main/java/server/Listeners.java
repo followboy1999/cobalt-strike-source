@@ -27,7 +27,7 @@ public class Listeners implements ServerHook {
     }
 
     public Listeners(Resources r) {
-        this.listeners = new HashMap();
+        this.listeners = new HashMap<>();
         this.config = null;
         this.resources = r;
         this.config = new ListenerConfig(ServerUtils.getProfile(r));

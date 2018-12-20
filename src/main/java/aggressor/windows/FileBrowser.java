@@ -23,13 +23,10 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Stack;
 
-public class FileBrowser
-        extends AObject implements Callback,
-        ActionListener,
-        TablePopup,
-        DoubleClickListener {
+public class FileBrowser extends AObject implements Callback, ActionListener, TablePopup, DoubleClickListener {
     protected String bid;
     protected AggressorClient client;
     protected GenericTableModel model = null;
@@ -60,34 +57,41 @@ public class FileBrowser
             if (!"".equals(temp.toString())) {
                 this.ls(temp.toString());
             }
-        } else if ("Upload...".equals(command)) {
-            SafeDialogs.openFile("Upload...", null, null, false, false, r -> {
-                TaskBeacon tasker = new TaskBeacon(FileBrowser.this.client, FileBrowser.this.client.getData(), FileBrowser.this.client.getConnection(), new String[]{FileBrowser.this.bid});
-                tasker.input("upload " + r + " (" + FileBrowser.this.cwd + "\\" + new File(r).getName() + ")");
-                tasker.Upload(r, FileBrowser.this.cwd + "\\" + new File(r).getName());
-                FileBrowser.this.ls(FileBrowser.this.cwd);
-            });
-        } else if ("Make Directory".equals(command)) {
-            SafeDialogs.ask("Which folder?", "", r -> {
-                TaskBeacon tasker = new TaskBeacon(FileBrowser.this.client, FileBrowser.this.client.getData(), FileBrowser.this.client.getConnection(), new String[]{FileBrowser.this.bid});
-                tasker.input("mkdir " + FileBrowser.this.cwd + "\\" + r);
-                tasker.MkDir(FileBrowser.this.cwd + "\\" + r);
-                FileBrowser.this.ls(FileBrowser.this.cwd);
-            });
-        } else if ("List Drives".equals(command)) {
-            this.client.getConnection().call("beacons.task_drives", CommonUtils.args(this.bid), (key, o) -> {
-                String[] drives = CommonUtils.toArray(CommonUtils.drives(o + ""));
-                LinkedList results = new LinkedList();
-                for (String drive : drives) {
-                    HashMap<String, String> next = new HashMap<>();
-                    next.put("D", "drive");
-                    next.put("Name", drive);
-                    results.add(next);
-                }
-                DialogUtils.setTable(FileBrowser.this.table, FileBrowser.this.model, results);
-            });
-        } else if ("Refresh".equals(command)) {
-            this.ls(this.cwd);
+        } else {
+            switch (command) {
+                case "Upload...":
+                    SafeDialogs.openFile("Upload...", null, null, false, false, r -> {
+                        TaskBeacon tasker = new TaskBeacon(FileBrowser.this.client, FileBrowser.this.client.getData(), FileBrowser.this.client.getConnection(), new String[]{FileBrowser.this.bid});
+                        tasker.input("upload " + r + " (" + FileBrowser.this.cwd + "\\" + new File(r).getName() + ")");
+                        tasker.Upload(r, FileBrowser.this.cwd + "\\" + new File(r).getName());
+                        FileBrowser.this.ls(FileBrowser.this.cwd);
+                    });
+                    break;
+                case "Make Directory":
+                    SafeDialogs.ask("Which folder?", "", r -> {
+                        TaskBeacon tasker = new TaskBeacon(FileBrowser.this.client, FileBrowser.this.client.getData(), FileBrowser.this.client.getConnection(), new String[]{FileBrowser.this.bid});
+                        tasker.input("mkdir " + FileBrowser.this.cwd + "\\" + r);
+                        tasker.MkDir(FileBrowser.this.cwd + "\\" + r);
+                        FileBrowser.this.ls(FileBrowser.this.cwd);
+                    });
+                    break;
+                case "List Drives":
+                    this.client.getConnection().call("beacons.task_drives", CommonUtils.args(this.bid), (key, o) -> {
+                        String[] drives = CommonUtils.toArray(CommonUtils.drives(o + ""));
+                        LinkedList<Map<String, Object>> results = new LinkedList<>();
+                        for (String drive : drives) {
+                            HashMap<String, Object> next = new HashMap<>();
+                            next.put("D", "drive");
+                            next.put("Name", drive);
+                            results.add(next);
+                        }
+                        DialogUtils.setTable(FileBrowser.this.table, FileBrowser.this.model, results);
+                    });
+                    break;
+                case "Refresh":
+                    this.ls(this.cwd);
+                    break;
+            }
         }
     }
 
@@ -117,7 +121,7 @@ public class FileBrowser
     public JComponent getContent() {
         JPanel dialog = new JPanel();
         dialog.setLayout(new BorderLayout());
-        this.model = DialogUtils.setupModel("Name", this.cols, new LinkedList());
+        this.model = DialogUtils.setupModel("Name", this.cols, new LinkedList<>());
         this.table = DialogUtils.setupTable(this.model, this.cols, true);
         this.table.getColumn("D").setMaxWidth(38);
         this.table.getColumn("Size").setCellRenderer(ATable.getSizeTableRenderer());
@@ -127,7 +131,8 @@ public class FileBrowser
         sorter.toggleSortOrder(0);
         this.table.setRowSorter(sorter);
         sorter.setComparator(2, Sorters.getNumberSorter());
-        sorter.setComparator(3, Sorters.getDateSorter("MM/dd/yyyy HH:mm:ss"));
+        // sorter.setComparator(3, Sorters.getDateSorter("MM/dd/yyyy HH:mm:ss"));
+        sorter.setComparator(3, Sorters.getDateSorter("yyyy/MM/dd HH:mm:ss"));
         this.table.setPopupMenu(this);
         this.table.addMouseListener(new DoubleClickWatch(this));
         JButton upload = DialogUtils.Button("Upload...", this);
@@ -155,12 +160,12 @@ public class FileBrowser
 
     @Override
     public void result(String key, Object o) {
-        LinkedList results = new LinkedList();
+        LinkedList<Map<String, Object>> results = new LinkedList<>();
         String[] rows = o.toString().trim().split("\n");
         this.cwd = rows[0].substring(0, rows[0].length() - 2);
         for (int x = 1; x < rows.length; ++x) {
             String[] cols = rows[x].split("\t");
-            HashMap<String, String> next = new HashMap<>();
+            HashMap<String, Object> next = new HashMap<>();
             if (cols[0].equals("D") && !".".equals(cols[3]) && !"..".equals(cols[3])) {
                 next.put("D", "dir");
                 next.put("Modified", cols[2]);

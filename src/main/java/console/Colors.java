@@ -21,7 +21,7 @@ public class Colors {
     }
 
     public static String underline(String text) {
-        return '\u001f' + text + '\u000f';
+        return underline + text + cancel;
     }
 
     public Colors(Properties prefs) {

@@ -6,8 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-public class ZoomableImage
-        extends JLabel {
+public class ZoomableImage extends JLabel {
     protected Icon original = null;
     protected double zoom = 1.0;
 
@@ -31,7 +30,6 @@ public class ZoomableImage
         menu.add(this.zoomMenu("200%", 2.0));
         menu.add(this.zoomMenu("250%", 2.5));
         this.addMouseListener(new MouseAdapter() {
-
             public void check(MouseEvent ev) {
                 if (ev.isPopupTrigger()) {
                     menu.show((JComponent) ev.getSource(), ev.getX(), ev.getY());

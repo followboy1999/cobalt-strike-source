@@ -11,7 +11,7 @@ public class CortanaPipe implements Runnable {
     protected PipedInputStream readme;
     protected PipedOutputStream writeme;
     protected boolean run = true;
-    protected List listeners = new LinkedList();
+    protected List<CortanaPipeListener> listeners = new LinkedList<>();
 
     public OutputStream getOutput() {
         return this.writeme;

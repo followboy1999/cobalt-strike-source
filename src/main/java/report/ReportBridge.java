@@ -22,7 +22,7 @@ public class ReportBridge implements Function, Loadable, Environment {
     protected LinkedHashMap<String, SleepClosure> reports = new LinkedHashMap<>();
 
     public LinkedList<String> reportTitles() {
-        return (LinkedList<String>) this.reports.keySet();
+        return new LinkedList<>(this.reports.keySet());
     }
 
     public String describe(String title) {

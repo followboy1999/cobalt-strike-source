@@ -14,8 +14,7 @@ import java.io.PrintStream;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class Console
-        extends JPanel implements FocusListener {
+public class Console extends JPanel implements FocusListener {
     protected JTextPane console;
     protected JTextField input;
     protected JTextPane prompt;
@@ -68,7 +67,8 @@ public class Console
             }
             component.setForeground(foreground);
             if (component == this.console || component == this.prompt) {
-                component.setOpaque(false);
+                component.setOpaque(true);
+                component.putClientProperty("Synthetica.opaque", Boolean.TRUE);
             } else {
                 component.setBackground(background);
             }
@@ -296,6 +296,7 @@ public class Console
         this.prompt.setBackground(new Color(0, 0, 0, 0));
         scroll.getViewport().setBackground(background);
         this.console.setOpaque(false);
+        this.console.putClientProperty("Synthetica.opaque", Boolean.FALSE);
     }
 
     public StatusBar getStatusBar() {

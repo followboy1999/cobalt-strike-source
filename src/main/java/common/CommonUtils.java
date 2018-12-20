@@ -70,27 +70,27 @@ public class CommonUtils {
         return new Object[]{a, b};
     }
 
-    public static Object[] args(Object a, Object b, Object c) {
+    public static Object[] args(Object a, String b, Object c) {
         return new Object[]{a, b, c};
     }
 
-    public static Object[] args(Object a, Object b, Object c, Object d) {
+    public static Object[] args(Object a, Serializable b, Object c, Serializable d) {
         return new Object[]{a, b, c, d};
     }
 
-    public static Object[] args(Object a, Object b, Object c, Object d, Object e) {
+    public static Object[] args(String a, String b, Serializable c, Object d, Integer e) {
         return new Object[]{a, b, c, d, e};
     }
 
-    public static Object[] args(Object a, Object b, Object c, Object d, Object e, Object f) {
+    public static Object[] args(String a, Object b, Boolean c, Object d, Object e, String f) {
         return new Object[]{a, b, c, d, e, f};
     }
 
-    public static Object[] args(Object a, Object b, Object c, Object d, Object e, Object f, Object g) {
+    public static Object[] args(String a, Object b, Boolean c, Object d, String e, String f, String g) {
         return new Object[]{a, b, c, d, e, f, g};
     }
 
-    public static Object[] args(Object a, Object b, Object c, Object d, Object e, Object f, Object g, Object h) {
+    public static Object[] args(String a, Object b, Object c, String d, Object e, String f, String g, Object h) {
         return new Object[]{a, b, c, d, e, f, g, h};
     }
 
@@ -139,13 +139,11 @@ public class CommonUtils {
     }
 
     public static String pad(String text, char choice, int length) {
-        String r = IntStream.range(text.length(), length).mapToObj(x -> String.valueOf(choice)).collect(Collectors.joining("", text, ""));
-        return r;
+        return IntStream.range(text.length(), length).mapToObj(x -> String.valueOf(choice)).collect(Collectors.joining("", text, ""));
     }
 
     public static String padr(String text, String pad, int length) {
-        String r = IntStream.range(text.length(), length).mapToObj(x -> pad).collect(Collectors.joining("", "", text));
-        return r;
+        return IntStream.range(text.length(), length).mapToObj(x -> pad).collect(Collectors.joining("", "", text));
     }
 
     public static String join(Collection text, String separator) {
@@ -196,7 +194,7 @@ public class CommonUtils {
         }
     }
 
-    public static void writeObject(File f, Object o) {
+    public static void writeObject(File f, java.security.KeyPair o) {
         try {
             ObjectOutputStream objout = new ObjectOutputStream(new FileOutputStream(f, false));
             objout.writeObject(SleepUtils.getScalar(o));
@@ -310,36 +308,32 @@ public class CommonUtils {
     }
 
     public static String[] toArray(Object[] items) {
-        String[] result = Arrays.stream(items).map(item -> item + "").toArray(String[]::new);
-        return result;
+        return Arrays.stream(items).map(item -> item + "").toArray(String[]::new);
     }
 
-    public static List toList(String description) {
+    public static List<String> toList(String description) {
         String[] temp = CommonUtils.toArray(description);
         return new LinkedList<>(Arrays.asList(temp));
     }
 
-    public static Set toSet(String description) {
+    public static Set<String> toSet(String description) {
         if ("".equals(description)) {
-            return new HashSet();
+            return new HashSet<>();
         }
-        return new HashSet(CommonUtils.toList(description));
+        return new HashSet<>(CommonUtils.toList(description));
     }
 
     public static Set toSet(Object[] items) {
         return new HashSet(CommonUtils.toList(items));
     }
 
-    public static Set toSetLC(String[] items) {
-        HashSet<String> result = Arrays.stream(items).filter(Objects::nonNull).map(String::toLowerCase).collect(Collectors.toCollection(HashSet::new));
-        return result;
+    public static Set<String> toSetLC(String[] items) {
+        return Arrays.stream(items).filter(Objects::nonNull).map(String::toLowerCase).collect(Collectors.toCollection(HashSet::new));
     }
 
     public static List toList(Object[] stuff) {
         LinkedList<Object> result = new LinkedList<>();
-        for (Object aStuff : stuff) {
-            result.add(aStuff);
-        }
+        Collections.addAll(result, stuff);
         return result;
     }
 
@@ -358,7 +352,7 @@ public class CommonUtils {
         return result;
     }
 
-    public static Stack scalar(String a) {
+    public static Stack<Scalar> scalar(String a) {
         Stack<Scalar> temp = new Stack<>();
         temp.push(SleepUtils.getScalar(a));
         return temp;
@@ -453,8 +447,7 @@ public class CommonUtils {
     }
 
     public static String repeat(String me, int iters) {
-        String result = IntStream.range(0, iters).mapToObj(x -> me).collect(Collectors.joining());
-        return result;
+        return IntStream.range(0, iters).mapToObj(x -> me).collect(Collectors.joining());
     }
 
     public static byte[] strrep(byte[] data, String oldstr, String newstr) {
@@ -540,8 +533,7 @@ public class CommonUtils {
 
     public static String[] expand(String data) {
         String[] temp = data.split("");
-        String[] result = IntStream.range(0, temp.length - 1).mapToObj(x -> temp[x + 1]).toArray(String[]::new);
-        return result;
+        return IntStream.range(0, temp.length - 1).mapToObj(x -> temp[x + 1]).toArray(String[]::new);
     }
 
     public static String toHex(byte[] data) {
@@ -785,7 +777,7 @@ public class CommonUtils {
         }
     }
 
-    public static Map KV(String key, String value) {
+    public static Map<String, String> KV(String key, String value) {
         HashMap<String, String> temp = new HashMap<>();
         temp.put(key, value);
         return temp;
@@ -832,15 +824,13 @@ public class CommonUtils {
     }
 
     public static Set difference(Set a, Set b) {
-        HashSet temp = new HashSet();
-        temp.addAll(a);
+        HashSet temp = new HashSet(a);
         temp.removeAll(b);
         return temp;
     }
 
     public static Set intersection(Set a, Set b) {
-        HashSet temp = new HashSet();
-        temp.addAll(a);
+        HashSet temp = new HashSet(a);
         temp.retainAll(b);
         return temp;
     }
@@ -880,8 +870,8 @@ public class CommonUtils {
         return text.trim();
     }
 
-    public static LinkedList parseTabData(String original, String[] cols) {
-        LinkedList results = new LinkedList();
+    public static LinkedList<HashMap<String, String>> parseTabData(String original, String[] cols) {
+        LinkedList<HashMap<String, String>> results = new LinkedList<HashMap<String, String>>();
         String[] temp = original.trim().split("\n");
         for (String aTemp : temp) {
             HashMap<String, String> next = new HashMap<>();
@@ -911,7 +901,9 @@ public class CommonUtils {
                         if (++aptr != a.length()) continue;
                         return true;
                     }
-                    for (cptr = aptr; cptr < a.length() && a.charAt(cptr) != '?' && a.charAt(cptr) != '\\' && a.charAt(cptr) != '*'; ++cptr) {
+                    cptr = aptr;
+                    while (cptr < a.length() && a.charAt(cptr) != '?' && a.charAt(cptr) != '\\' && a.charAt(cptr) != '*') {
+                        ++cptr;
                     }
                     if (cptr != aptr) {
                         cptr = greedy ? b.lastIndexOf(a.substring(aptr, cptr)) : b.indexOf(a.substring(aptr, cptr), bptr);

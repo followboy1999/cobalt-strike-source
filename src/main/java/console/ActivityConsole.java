@@ -6,8 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Properties;
 
-public class ActivityConsole
-        extends Console implements Activity {
+public class ActivityConsole extends Console implements Activity {
     protected JLabel label;
     protected Color original;
 

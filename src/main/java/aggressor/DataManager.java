@@ -249,11 +249,11 @@ public class DataManager implements Callback, GenericDataManager {
                 }
             } else if (this.isDataModel(key)) {
                 if (data instanceof ChangeLog) {
-                    HashMap original = (HashMap)this.store.get(key);
+                    Map<String,Map> original = (HashMap)this.store.get(key);
                     ChangeLog summary;
                     if (original == null) {
                         CommonUtils.print_error("data manager does not have: " + key + " [will apply summary to empty model]");
-                        original = new HashMap();
+                        original = new HashMap<>();
                         summary = (ChangeLog)data;
                         summary.applyForce(original);
                         this.store.put(key, original);

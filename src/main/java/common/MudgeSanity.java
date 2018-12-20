@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class MudgeSanity {
-    private static Map details = new HashMap();
+    private static Map<String, String> details = new HashMap<>();
 
     public MudgeSanity() {
     }
@@ -82,7 +82,7 @@ public class MudgeSanity {
         CommonUtils.print_info("saved debug.txt");
     }
 
-    public static void debugRequest(String tx, Map headers, Map parameters, String input, String uri, String ext) {
+    public static void debugRequest(String tx, Map<Object, Object> headers, Map<Object, Object> parameters, String input, String uri, String ext) {
         StringBuilder buffer = new StringBuilder();
         buffer.append("A Malleable C2 attempt to recover data from a '").append(tx).append("' transaction failed. This could be due to a bug in the profile, a change made to the profile after this Beacon was run, or a change made to the transaction by some device between your target and your Cobalt Strike controller. The following information will (hopefully) help narrow down what happened.\n\n");
         buffer.append("From   '").append(ext).append("'\n");
@@ -91,15 +91,15 @@ public class MudgeSanity {
             buffer.append("post'd '").append(input.replaceAll("\\P{Print}", ".")).append("'\n");
         }
 
-        Iterator i;
-        Entry entry;
+        Iterator<Entry<Object, Object>> i;
+        Entry<Object, Object> entry;
         if (headers != null && headers.size() > 0) {
             buffer.append("\nHeaders\n");
             buffer.append("-------\n");
             i = headers.entrySet().iterator();
 
             while (i.hasNext()) {
-                entry = (Entry) i.next();
+                entry = i.next();
                 buffer.append("'").append(entry.getKey()).append("' = '").append(entry.getValue()).append("'\n");
             }
         }
@@ -110,7 +110,7 @@ public class MudgeSanity {
             i = parameters.entrySet().iterator();
 
             while (i.hasNext()) {
-                entry = (Entry) i.next();
+                entry = i.next();
                 buffer.append("'").append(entry.getKey()).append("' = '").append(entry.getValue()).append("'\n");
             }
         }
