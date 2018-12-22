@@ -111,7 +111,6 @@ public class PreferencesDialog
         this.dialog.add(DialogUtils.center(save), "South");
         this.dialog.pack();
         this.dialog.setVisible(true);
-        this.dialog.show();
     }
 }
 

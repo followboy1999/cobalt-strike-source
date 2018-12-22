@@ -153,7 +153,6 @@ public class MailPreview
         this.dialog.add(pain, "Center");
         this.dialog.add(DialogUtils.center(closeme), "South");
         this.dialog.setVisible(true);
-        this.dialog.show();
     }
 
 }

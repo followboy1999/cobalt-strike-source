@@ -67,7 +67,6 @@ public class ListenerChooser
         this.dialog.add(DialogUtils.FilterAndScroll(this.table), "Center");
         this.dialog.add(DialogUtils.center(choose, add, help), "South");
         this.dialog.setVisible(true);
-        this.dialog.show();
     }
 
     @Override

@@ -96,7 +96,6 @@ public class MailServerDialog
         this.dialog.add(DialogUtils.center(set), "South");
         this.dialog.pack();
         this.dialog.setVisible(true);
-        this.dialog.show();
     }
 }
 

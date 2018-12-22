@@ -52,7 +52,6 @@ public class ProxyServerDialog
         this.dialog.add(DialogUtils.center(set, defaults, help), "South");
         this.dialog.pack();
         this.dialog.setVisible(true);
-        this.dialog.show();
     }
 }
 

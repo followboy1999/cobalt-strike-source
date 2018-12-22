@@ -83,7 +83,6 @@ public class FontDialog implements ItemListener,
         this.dialog.add(DialogUtils.center(choose), "South");
         this.dialog.pack();
         this.dialog.setVisible(true);
-        this.dialog.show();
     }
 }
 

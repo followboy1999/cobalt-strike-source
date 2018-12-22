@@ -41,7 +41,6 @@ public class BeaconChooser
         this.dialog.add(DialogUtils.center(choose), "South");
         this.dialog.addWindowListener(this.browser.onclose());
         this.dialog.setVisible(true);
-        this.dialog.show();
     }
 }
 

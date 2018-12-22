@@ -61,7 +61,6 @@ public class SiteChooser
         this.dialog.add(DialogUtils.FilterAndScroll(this.table), "Center");
         this.dialog.add(DialogUtils.center(choose), "South");
         this.dialog.setVisible(true);
-        this.dialog.show();
     }
 
     @Override
