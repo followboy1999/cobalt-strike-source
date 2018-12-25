@@ -19,7 +19,7 @@ public class UseSynthetica extends UseLookAndFeel {
             UIManager.put("Synthetica.tabbedPane.keepOpacity", true);
             UIManager.setLookAndFeel("de.javasoft.plaf.synthetica.SyntheticaSimple2DLookAndFeel");
             // UIManager.setLookAndFeel("de.javasoft.plaf.synthetica.SyntheticaBlueIceLookAndFeel");
-            // Font temp = Prefs.getPreferences().getFont("client.font.font", "Tahoma-BOLD-11");
+            //Font temp = Prefs.getPreferences().getFont("client.font.font", "Tahoma-BOLD-11");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
